@@ -1,6 +1,13 @@
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 
+// Vercel deploys the `.next` output directly and overrides standalone output.
+// The packaging below is only needed by the self-hosted Docker deployment.
+if (process.env.VERCEL) {
+  console.log('Skipping standalone packaging for Vercel.')
+  process.exit(0)
+}
+
 const root = process.cwd()
 const dist = resolve(root, 'dist')
 const standalone = resolve(root, '.next/standalone')
