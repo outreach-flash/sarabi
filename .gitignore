@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.*
+
+# Next.js build output
+.next/
+**/.next/
+out/
+build/
+dist/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# TypeScript and test coverage
+*.tsbuildinfo
+coverage/
+
+# Logs and local tooling
+*.log
+.playwright-mcp/
+.vercel/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Project-local generated assets
+Sarabi/
+cmp/
+Sarabi-Homepage-Version-1.1.pdf

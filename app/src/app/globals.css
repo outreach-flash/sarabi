@@ -1,0 +1,283 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #150a05;
+  --color-ink-2: #1e0e07;
+  --color-brown: #26130a;
+  --color-brown-2: #2e180d;
+  --color-cocoa: #2a1207;
+  --color-cream: #f5ecdc;
+  --color-gold: #fdd8a7;
+  --color-gold-deep: #e8b478;
+  --color-muted: #96806c;
+  --color-olive: #6b714c;
+  --color-line: rgb(253 216 167 / .14);
+
+  --font-sans: var(--font-manrope), sans-serif;
+  --font-display: var(--font-sora), sans-serif;
+  --font-serif: var(--font-fraunces), serif;
+
+  /* Source breakpoints: 700px tablet, 960px desktop */
+  --breakpoint-md: 43.75rem;
+  --breakpoint-lg: 60rem;
+  /* About page breakpoints: 600px mobile → tablet, 900px tablet → desktop */
+  --breakpoint-sm: 37.5rem;
+  --breakpoint-wide: 56.25rem;
+
+  --animate-marquee: marquee 25s linear infinite;
+  @keyframes marquee {
+    to {
+      translate: -50%;
+    }
+  }
+}
+
+/* Helpers for things Tailwind has no single class for */
+@utility bg-gold-gradient {
+  background-image: linear-gradient(135deg, var(--color-gold), var(--color-gold-deep));
+}
+
+@utility text-gold-gradient {
+  color: transparent;
+  background-image: linear-gradient(124deg, var(--color-gold), var(--color-gold-deep));
+  background-clip: text;
+  -webkit-background-clip: text;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
+}
+
+@utility media-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgb(253 216 167 / .16);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 62% 35%, rgb(253 216 167 / .22), transparent 18%),
+    linear-gradient(145deg, #4a2b19, #241108 65%, #100804);
+
+  &::before {
+    position: absolute;
+    inset: 5%;
+    border: 1px solid rgb(253 216 167 / .14);
+    border-radius: 10px;
+    content: '';
+  }
+}
+
+@utility type-about-title {
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 700;
+  font-size: 57.6px;
+  line-height: 1.12;
+  letter-spacing: -2.3px;
+}
+
+@utility page-wrap {
+  width: min(1280px, calc(100% - 32px));
+  margin-inline: auto;
+  @variant sm {
+    width: calc(100% - 64px);
+  }
+  @variant wide {
+    width: min(1280px, calc(100% - 10vw));
+  }
+}
+
+@utility type-page-title {
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--color-cream);
+}
+
+@utility type-page-body {
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgb(245 236 220 / 0.58);
+}
+
+@utility em-accent {
+  color: var(--color-gold);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
+}
+
+/* About media panel variants — unlayered so they win over the media-panel utility */
+.media-panel-hero {
+  border-color: rgb(253 216 167 / .23);
+  background:
+    radial-gradient(circle at 65% 30%, rgb(253 216 167 / .24), transparent 18%),
+    linear-gradient(144deg, #56321e, #241108 65%, #100804);
+}
+
+/* Export media placeholder — used across the ported pages */
+.media-panel-frame {
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 66% 26%, rgb(253 216 167 / .2), transparent 16%),
+    linear-gradient(145deg, #51301c, #241108 65%, #100804);
+}
+.media-panel-frame::before {
+  inset: 18px;
+  border-radius: 9px;
+}
+.media-panel-frame > span {
+  color: rgb(253 216 167 / .55);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+/* Gallery cards carry their own border; the panel fills the card */
+.media-panel-frame-fill {
+  border-width: 0;
+  border-radius: 4px;
+}
+
+.media-panel-card {
+  border-width: 0;
+  border-radius: 0;
+}
+.media-panel-card::before {
+  display: none;
+}
+.media-panel-card > span {
+  font-size: 8.8px;
+  letter-spacing: 1.76px;
+}
+
+@media (max-width: 37.5rem) {
+  .media-panel-card {
+    border-right-width: 1px;
+    border-right-color: rgb(253 216 167 / .12);
+  }
+  .media-panel-card > span {
+    max-width: 70px;
+    font-size: 7px;
+  }
+  .media-panel-hero > span {
+    max-width: 210px;
+    line-height: 1.7;
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(245 236 220 / .12);
+}
+
+@utility glow-gold {
+  box-shadow: 0 0 26px rgb(253 216 167 / .24), 0 10px 26px rgb(0 0 0 / .45);
+}
+
+@utility type-eyebrow {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 10.6px;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 3.6px;
+  text-transform: uppercase;
+}
+
+@utility type-display {
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 700;
+  font-size: clamp(33.6px, 8.6vw, 54px);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-ink);
+  }
+  body {
+    min-width: 320px;
+    background: var(--color-ink);
+    color: var(--color-cream);
+    font-family: var(--font-sans), sans-serif;
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    cursor: pointer;
+  }
+  img {
+    display: block;
+  }
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-cocoa);
+  }
+  section[id] {
+    scroll-margin-top: 2rem;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 4px;
+  }
+}
+
+/* Unlayered so these overrides win over Tailwind's layered utilities */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Native accessible dialog (ReservationNotice) */
+dialog {
+  color: var(--color-cream);
+}
+dialog::backdrop {
+  background: rgb(21 10 5 / .84);
+  backdrop-filter: blur(8px);
+}
+.notice-dialog {
+  width: min(calc(100% - 2rem), 34rem);
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  background: var(--color-brown);
+  box-shadow: 0 2rem 6rem rgb(0 0 0 / .5);
+}
+.notice-dialog[open] {
+  animation: dialog-in 240ms ease-out;
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
