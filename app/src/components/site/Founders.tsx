@@ -14,7 +14,7 @@ export function Founders() {
       <div className="mx-auto max-w-[1200px]">
         <div className="mb-[50px] grid gap-[25px] md:grid-cols-[1fr_auto] md:items-end" data-reveal>
           <div id="founders-title">
-            <SectionLabel>03 — The Founders</SectionLabel>
+            <SectionLabel>04 — The Founders</SectionLabel>
             <DisplayTitle>
               Two visions.
               <br />

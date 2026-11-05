@@ -4,7 +4,7 @@ export function MenuTabs() {
   return (
     <nav
       aria-label="Menu categories"
-      className="sticky top-0 z-10 flex h-[54px] items-center justify-center gap-[25px] border-y border-line bg-ink/93 backdrop-blur-[14px] sm:h-[64px] sm:gap-[72px]"
+      className="sticky top-[var(--header-h)] z-10 flex h-[54px] items-center justify-center gap-[25px] border-y border-line bg-ink/93 backdrop-blur-[14px] sm:h-[64px] sm:gap-[72px]"
     >
       {menuCategories.map((section) => (
         <a

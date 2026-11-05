@@ -8,7 +8,7 @@ export function Menu() {
   return (
     <section id="menu" className="relative px-5 py-20 md:px-10 md:py-[110px]">
       <div className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-2 lg:items-center lg:gap-20">
-        <div data-reveal>
+        <div>
           <SectionLabel>06 — Menu</SectionLabel>
           <DisplayTitle>
             A taste of <em>Sarabi</em>
@@ -31,9 +31,9 @@ export function Menu() {
             View the full menu
           </ButtonLink>
         </div>
-        <div className="relative self-center" data-reveal>
+        <div className="relative self-center">
           <div className="overflow-hidden rounded-[18px] border border-line shadow-[0_0_70px_rgb(253_216_167/0.12)]">
-            <div data-parallax>
+            <div>
               <Image
                 src={images.cocktails}
                 alt="Signature cocktails served at golden hour"
