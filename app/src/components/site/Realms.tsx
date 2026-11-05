@@ -1,6 +1,6 @@
-import Image from 'next/image'
-import { realms } from '@/lib/content'
-import arrowUpRight from '@/assets/icons/arrow-up-right.svg'
+import { RealmsCarousel } from './realms/RealmsCarousel'
+import { RealmsSequence } from './realms/RealmsSequence'
+import { ReserveButton } from './ReservationNotice'
 import { DisplayTitle } from './ui/DisplayTitle'
 import { SectionLabel } from './ui/SectionLabel'
 
@@ -20,32 +20,19 @@ export function Realms() {
             Every realm has its own bar identity, its own ritual, its own hour. Move between them — or stay until the mirage fades.
           </p>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {realms.map((realm) => (
-            <article
-              key={realm.name}
-              className="relative flex min-h-[420px] items-end overflow-hidden rounded-[18px] border border-line bg-brown md:min-h-[540px]"
-              data-reveal
-            >
-              <Image src={realm.image} alt="" fill sizes="(min-width: 960px) 33vw, (min-width: 700px) 33vw, 100vw" className="object-cover" />
-              <span className="absolute inset-0 bg-[linear-gradient(to_top,rgba(21,10,5,0.94)_4%,rgba(21,10,5,0.14)_55%,rgba(21,10,5,0.08))]" />
-              <div className="relative w-full p-[30px]">
-                <em className="font-serif text-[14.4px] leading-[1.6] text-gold italic">Realm {realm.numeral}</em>
-                <h3 className="mt-1 font-display text-[27.2px] leading-[1.6] font-bold">{realm.name}</h3>
-                <small className="text-[9.6px] leading-[1.6] font-bold tracking-[2.7px] text-gold uppercase">{realm.bar}</small>
-                <p className="my-[10px] mb-[19px] text-[13.6px] leading-[1.6] font-light text-cream/68">{realm.copy}</p>
-                <footer className="flex gap-[21px] border-t border-line pt-4">
-                  <a href="#reservations" className="flex items-center gap-[6px] text-[10.2px] leading-[1.6] font-bold tracking-[2.25px] text-gold uppercase no-underline">
-                    Reserve here
-                  </a>
-                  <a href="/spaces" className="flex items-center gap-[6px] text-[10.2px] leading-[1.6] font-bold tracking-[2.25px] text-cream uppercase no-underline">
-                    Explore <Image src={arrowUpRight} alt="" width={11} height={11} />
-                  </a>
-                </footer>
-              </div>
-            </article>
-          ))}
-        </div>
+      </div>
+
+      <RealmsSequence />
+
+      <div className="mx-auto max-w-[1200px] lg:hidden">
+        <RealmsCarousel />
+      </div>
+
+      <div className="mx-auto mt-[70px] flex max-w-[1200px] flex-col items-center gap-6 text-center">
+        <p className="max-w-[460px] font-display text-[clamp(24px,3.4vw,34px)] leading-[1.2] font-bold text-cream">
+          One night, three realms — <em className="text-gold-gradient">find yours.</em>
+        </p>
+        <ReserveButton>Reserve your realm</ReserveButton>
       </div>
     </section>
   )

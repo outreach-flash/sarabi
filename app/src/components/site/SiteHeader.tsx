@@ -4,11 +4,20 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { menuLinks, navLinks } from '@/lib/content'
+import { ReserveButton } from './ReservationNotice'
 import { Brand } from './ui/Brand'
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -34,9 +43,13 @@ export function SiteHeader() {
     }`
 
   return (
-    <header className="absolute inset-x-0 top-0 z-30 flex items-center justify-between px-5 py-[18px] md:px-10">
+    <header
+      className={`fixed inset-x-0 top-0 z-30 flex items-center justify-between px-5 transition-[background-color,padding,backdrop-filter,border-color] duration-300 md:px-10 ${
+        scrolled ? 'border-b border-line bg-ink/90 py-3 backdrop-blur' : 'border-b border-transparent py-[18px]'
+      }`}
+    >
       <Brand />
-      <nav className="hidden gap-[18px] md:flex lg:gap-[26px]" aria-label="Main navigation">
+      <nav className="hidden items-center gap-[18px] md:flex lg:gap-[26px]" aria-label="Main navigation">
         {navLinks.map((link) => (
           <Link
             key={link.href}
@@ -47,9 +60,12 @@ export function SiteHeader() {
             {link.label}
           </Link>
         ))}
+        <ReserveButton size="sm" icon={false} className="ml-2">
+          Reserve
+        </ReserveButton>
       </nav>
       <button
-        className="flex flex-col gap-[6px] border-0 bg-transparent p-2 md:hidden"
+        className="flex flex-col gap-[6px] border-0 bg-transparent p-2"
         onClick={() => setMenuOpen(true)}
         aria-label="Open menu"
       >

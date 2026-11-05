@@ -20,8 +20,8 @@ export default function Home() {
         <Marquee />
         <Realms />
         <Discover />
-        <Founders />
         <Events />
+        <Founders />
         <Performance />
         <Menu />
         <Gallery />

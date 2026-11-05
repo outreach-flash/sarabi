@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { images } from '@/lib/content'
+import { aboutCopy, images } from '@/lib/content'
 import { ButtonLink } from './ui/ButtonLink'
 import { DisplayTitle } from './ui/DisplayTitle'
 import { SectionLabel } from './ui/SectionLabel'
@@ -9,13 +9,15 @@ export function Discover() {
     <section id="discover" className="relative px-5 py-20 md:px-10 md:py-[110px]">
       <div className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-2 lg:items-center lg:gap-20">
         <div data-reveal>
-          <SectionLabel>02 — Discover Sarabi</SectionLabel>
+          <SectionLabel>02 — About Sarabi</SectionLabel>
           <DisplayTitle>
-            An artisanal world where <em>earth and water</em> meet
+            India’s First <br />
+            <em>Tribal Luxe Experience</em>
           </DisplayTitle>
           <div className="grid gap-4 text-[16px] leading-[1.6] font-light text-cream/66">
-            <p>Sarabi — “the mirage” — carries the spirit of illusion, shimmering light and revelation; the mystique of desert horizons and the regal power of the lioness queen.</p>
-            <p>Shadow and sculpture converse here. Global mixology, Indian-soul cuisine and tribal-inspired craft merge into a sanctuary of memory, ritual and revelry — built patiently over three years.</p>
+            {aboutCopy.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
           <blockquote className="my-[34px] mb-[32px] border-l-2 border-muted pl-5 font-serif text-[16px] leading-[1.6] text-cream/85 italic">
             “Sarabi is my devotion — three years of sculpting, breaking, rebuilding and believing.”
@@ -27,9 +29,9 @@ export function Discover() {
             Discover the Realms
           </ButtonLink>
         </div>
-        <div className="relative self-center" data-reveal>
+        <div className="relative self-center">
           <div className="overflow-hidden rounded-[18px] border border-line shadow-[0_0_70px_rgb(253_216_167/0.12)]">
-            <div data-parallax>
+            <div data-clip-reveal>
               <Image
                 src={images.sunkenSeating}
                 alt="Sunken seating carved into dark stone at Sarabi, Vagator"

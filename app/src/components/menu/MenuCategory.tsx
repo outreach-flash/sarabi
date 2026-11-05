@@ -6,7 +6,7 @@ type MenuCategoryData = (typeof menuCategories)[number]
 
 export function MenuCategory({ category }: { category: MenuCategoryData }) {
   return (
-    <section id={category.id} className="page-wrap scroll-mt-16 py-[55px] wide:py-[90px]">
+    <section id={category.id} className="page-wrap scroll-mt-[calc(var(--header-h)+64px)] py-[55px] wide:py-[90px]">
       <SectionHeading
         eyebrow={category.eyebrow}
         title={

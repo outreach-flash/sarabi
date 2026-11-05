@@ -1,5 +1,14 @@
 @import 'tailwindcss';
 
+:root {
+  /* Slim fixed header height — menu tabs and anchors offset from this */
+  --header-h: 64px;
+  /* Per-realm ambient washes for the Realms sequence stage */
+  --realm-ambient-sundeck: radial-gradient(circle at 32% 24%, rgb(253 216 167 / .17), transparent 58%);
+  --realm-ambient-pond: radial-gradient(circle at 32% 24%, rgb(107 113 76 / .2), transparent 58%);
+  --realm-ambient-den: radial-gradient(circle at 32% 24%, rgb(178 84 42 / .22), transparent 58%);
+}
+
 @theme {
   --color-ink: #150a05;
   --color-ink-2: #1e0e07;
@@ -225,7 +234,7 @@
     color: var(--color-cocoa);
   }
   section[id] {
-    scroll-margin-top: 2rem;
+    scroll-margin-top: calc(var(--header-h) + 12px);
   }
   :focus-visible {
     outline: 2px solid var(--color-gold);
@@ -250,7 +259,7 @@
   }
 }
 
-/* Native accessible dialog (ReservationNotice) */
+/* Native accessible dialogs (BookingDialog, gallery lightbox) */
 dialog {
   color: var(--color-cream);
 }
