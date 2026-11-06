@@ -3,7 +3,7 @@ import { PageEyebrow } from '@/components/pages/ui/PageEyebrow'
 export function GalleryStory() {
   return (
     <section className="page-wrap block py-[55px] sm:grid sm:grid-cols-2 sm:gap-[40px] sm:py-[80px] wide:grid-cols-[0.7fr_1.3fr] wide:gap-[80px]">
-      <div data-reveal>
+      <div className="sm:sticky sm:top-[calc(var(--header-h)+40px)] sm:self-start" data-reveal>
         <PageEyebrow>Cultural inspiration</PageEyebrow>
         <h2 className="type-page-title mt-[12px] text-[34px] leading-[1.12] sm:text-[44px]">
           A story told with <em className="em-accent">care.</em>

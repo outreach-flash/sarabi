@@ -8,7 +8,7 @@ import { MapPanel } from './MapPanel'
 export function VisitDetails() {
   return (
     <section className="page-wrap flex flex-col gap-[45px] pt-[25px] pb-[60px] sm:grid sm:grid-cols-2 sm:gap-[42px] sm:pt-[64px] sm:pb-[72px] wide:grid-cols-[0.9fr_1.1fr] wide:gap-[86px] wide:pt-[72px] wide:pb-[96px]">
-      <div>
+      <div data-stagger>
         <PageEyebrow>Contact & reservations</PageEyebrow>
         <h2 className="type-page-title mx-[0] my-[14px] mb-[6px] text-[34px] leading-[1.12] sm:text-[42px] wide:text-[56px]">
           Come find <em className="em-accent">us.</em>
@@ -59,7 +59,9 @@ export function VisitDetails() {
           </div>
         </InfoCard>
       </div>
-      <MapPanel />
+      <div className="order-first sm:order-none sm:sticky sm:top-[calc(var(--header-h)+24px)] sm:self-start">
+        <MapPanel />
+      </div>
     </section>
   )
 }

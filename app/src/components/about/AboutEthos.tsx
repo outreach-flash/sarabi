@@ -1,6 +1,9 @@
-import { ethos } from '@/lib/content'
+import { ethos, images } from '@/lib/content'
 import { AboutEyebrow } from './ui/AboutEyebrow'
 import { MediaPanel } from './ui/MediaPanel'
+
+const ethosImages = [images.cocktails, images.bookBand, images.pond] as const
+const ethosSpeeds = [0, 0.08, 0.16] as const
 
 export function AboutEthos() {
   return (
@@ -19,16 +22,22 @@ export function AboutEthos() {
           approved brand copy and matching imagery.
         </p>
       </div>
-      <div className="mx-auto grid w-[min(1280px,100%)] grid-cols-1 gap-[13px] sm:grid-cols-3 sm:gap-4">
-        {ethos.map((card) => (
+      <div className="mx-auto grid w-[min(1280px,100%)] grid-cols-1 gap-[13px] sm:grid-cols-3 sm:items-start sm:gap-4">
+        {ethos.map((card, i) => (
           <article
             key={card.number}
             data-reveal
-            className="grid min-h-[172px] grid-cols-[36%_64%] overflow-hidden rounded-[13px] border border-gold/15 bg-[rgb(44_23_12/0.72)] sm:block sm:min-h-0"
+            data-stack-card
+            data-speed={ethosSpeeds[i]}
+            style={{ top: `calc(var(--header-h) + ${12 + i * 16}px)` }}
+            className="grid min-h-[172px] grid-cols-[36%_64%] overflow-hidden rounded-[13px] border border-gold/15 bg-[rgb(44_23_12/0.72)] max-lg:sticky sm:block sm:min-h-0"
           >
-            <MediaPanel variant="card" className="min-h-[170px] sm:min-h-[210px]">
-              Media placeholder
-            </MediaPanel>
+            <MediaPanel
+              variant="card"
+              image={ethosImages[i]}
+              alt={card.title}
+              className="min-h-[170px] sm:min-h-[210px]"
+            />
             <div className="min-h-[170px] pt-[23px] pr-4 pb-4 pl-4 sm:min-h-[180px] sm:px-6 sm:pt-[31px] sm:pb-6">
               <span className="text-[9.1px] tracking-[2px] text-muted">{card.number}</span>
               <h3 className="mt-3 font-display text-[16px] leading-[1.12] font-bold tracking-[-0.77px] text-cream wide:text-[19.2px]">

@@ -51,19 +51,23 @@ export function GalleryCollection() {
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 wide:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 wide:grid-cols-4" data-stagger>
         {visible.map((item) => (
           <button
             key={item.title}
             type="button"
             onClick={() => setSelected(item)}
-            className={`relative flex flex-col rounded-[5px] border border-line text-left transition-colors hover:border-gold/55 ${
+            className={`relative flex flex-col overflow-hidden rounded-[5px] border border-line text-left transition-colors hover:border-gold/55 ${
               item.wide ? 'col-span-2 min-h-[280px] sm:min-h-[360px]' : 'col-span-1 min-h-[190px] sm:min-h-[220px]'
             }`}
           >
-            <MediaPanel variant="frame" className="media-panel-frame-fill absolute inset-0 min-h-0">
-              {`${item.title} placeholder`}
-            </MediaPanel>
+            <MediaPanel
+              variant="frame"
+              image={item.image}
+              alt={item.title}
+              className="media-panel-frame-fill absolute inset-0 min-h-0"
+            />
+            <span className="absolute inset-0 z-[1] bg-[linear-gradient(to_top,rgba(21,10,5,0.85),rgba(21,10,5,0.05)_55%)]" />
             <span className="z-[2] mt-auto flex flex-col p-4">
               <strong className="font-display text-[12px] font-semibold text-cream">{item.title}</strong>
               <small className="mt-[4px] text-[9px] text-cream/48">
@@ -95,9 +99,13 @@ export function GalleryCollection() {
         </button>
         {selected ? (
           <>
-            <MediaPanel variant="frame" className="w-[92vw] min-h-[55vh] wide:w-[min(950px,75vw)] wide:min-h-[min(620px,70vh)]">
-              {`${selected.title} — approved media placeholder`}
-            </MediaPanel>
+            <MediaPanel
+              variant="frame"
+              image={selected.image}
+              alt={selected.title}
+              parallax={false}
+              className="w-[92vw] min-h-[55vh] wide:w-[min(950px,75vw)] wide:min-h-[min(620px,70vh)]"
+            />
             <div className="mt-[18px] w-[92vw] sm:absolute sm:bottom-[7vw] sm:left-[9vw] sm:mt-0 sm:w-auto">
               <PageEyebrow>
                 {selected.category} · {selected.type}

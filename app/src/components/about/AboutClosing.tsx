@@ -9,7 +9,10 @@ export function AboutClosing() {
       className="bg-[linear-gradient(#150a05,#1b0b05)] px-5 pt-[93px] pb-[72px] text-center sm:bg-none sm:px-[4%] sm:py-28 wide:px-[max(5.5%,calc((100vw-1280px)/2))]"
     >
       <AboutEyebrow centered>Your Sarabi Experience</AboutEyebrow>
-      <h2 className="type-about-title mt-4 block text-[36.8px] tracking-[-1.47px] text-cream sm:mt-[17px] sm:flex sm:flex-wrap sm:justify-center sm:gap-x-3 sm:text-[57.6px] sm:tracking-[-2.3px] [&_em]:em-accent [&_em]:block sm:[&_em]:inline">
+      <h2
+        className="type-about-title mt-4 block text-[36.8px] tracking-[-1.47px] text-cream sm:mt-[17px] sm:flex sm:flex-wrap sm:justify-center sm:gap-x-3 sm:text-[57.6px] sm:tracking-[-2.3px] [&_em]:em-accent [&_em]:block sm:[&_em]:inline"
+        data-reveal
+      >
         Find your place in
         <em>the story.</em>
       </h2>

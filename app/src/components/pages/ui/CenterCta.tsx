@@ -19,7 +19,7 @@ export function CenterCta({
 }) {
   return (
     <section className={`flex ${minH} flex-col items-center justify-center px-4 pt-[70px] pb-[110px] text-center sm:px-[5vw] ${className}`}>
-      <div className="flex flex-col items-center" data-reveal>
+      <div className="flex flex-col items-center" data-reveal data-scale-in>
         <PageEyebrow centered>{eyebrow}</PageEyebrow>
         <h2 className="type-page-title mt-[18px] mb-[14px] flex flex-col text-[33px] leading-[1.12] sm:text-[38px] wide:text-[clamp(38px,4vw,56px)] [&_em]:em-accent">
           {title}

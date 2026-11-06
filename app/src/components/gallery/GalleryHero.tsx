@@ -1,5 +1,6 @@
 import { MediaPanel } from '@/components/about/ui/MediaPanel'
 import { PageEyebrow } from '@/components/pages/ui/PageEyebrow'
+import { images } from '@/lib/content'
 
 export function GalleryHero() {
   return (
@@ -20,10 +21,10 @@ export function GalleryHero() {
       </div>
       <MediaPanel
         variant="frame"
+        image={images.rooftopParty}
+        alt="A rooftop party under the lights at Sarabi"
         className="mt-[35px] w-full min-h-[230px] sm:mt-[58px] sm:min-h-[500px]"
-      >
-        Featured performance video still — client media placeholder
-      </MediaPanel>
+      />
     </section>
   )
 }

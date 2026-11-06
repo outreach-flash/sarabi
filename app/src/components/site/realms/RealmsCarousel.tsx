@@ -67,7 +67,7 @@ export function RealmsCarousel() {
                   {realm.cta}
                 </button>
                 <Link
-                  href="/spaces"
+                  href={`/spaces#${realm.name.toLowerCase()}`}
                   className="flex items-center gap-[6px] text-[10.2px] leading-[1.6] font-bold tracking-[2.25px] text-cream uppercase no-underline"
                 >
                   Explore

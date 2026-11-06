@@ -4,7 +4,7 @@ import { address, directionsUrl, mapEmbedUrl } from '@/lib/content'
 export function MapPanel() {
   return (
     <div
-      className="relative order-first min-h-[440px] overflow-hidden rounded-[14px] border border-line sm:order-none sm:min-h-[620px] wide:min-h-[680px]"
+      className="relative order-first min-h-[440px] overflow-hidden rounded-[14px] border border-line sm:order-none sm:h-[calc(100dvh-var(--header-h)-48px)] sm:min-h-[480px] wide:min-h-[560px]"
       data-reveal
     >
       <iframe

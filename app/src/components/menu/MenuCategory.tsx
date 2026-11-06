@@ -5,6 +5,7 @@ import { menuCategories } from '@/lib/content'
 type MenuCategoryData = (typeof menuCategories)[number]
 
 export function MenuCategory({ category }: { category: MenuCategoryData }) {
+  const image = 'image' in category ? category.image : undefined
   return (
     <section id={category.id} className="page-wrap scroll-mt-[calc(var(--header-h)+64px)] py-[55px] wide:py-[90px]">
       <SectionHeading
@@ -17,13 +18,12 @@ export function MenuCategory({ category }: { category: MenuCategoryData }) {
         }
         copy={category.description}
       />
-      <div className="mt-[32px] flex flex-col gap-[30px] sm:grid sm:grid-cols-[1fr_0.85fr] sm:gap-[45px] wide:gap-[90px]">
-        <div className="border-t border-line">
+      <div className="mt-[32px] flex flex-col gap-[30px] sm:grid sm:grid-cols-[1fr_0.85fr] sm:items-start sm:gap-[45px] wide:gap-[90px]">
+        <div className="border-t border-line sm:min-h-[620px] wide:min-h-[760px]" data-stagger>
           {category.items.map((item) => (
             <article
               key={item.name}
               className="flex justify-between gap-[20px] border-b border-line py-[22px]"
-              data-reveal
             >
               <div>
                 <h3 className="font-display text-[15px] leading-none font-semibold text-cream">{item.name}</h3>
@@ -40,9 +40,20 @@ export function MenuCategory({ category }: { category: MenuCategoryData }) {
             </article>
           ))}
         </div>
-        <MediaPanel variant="frame" className="w-full min-h-[290px] wide:min-h-[530px]">
-          {category.image}
-        </MediaPanel>
+        {image ? (
+          <div className="sm:sticky sm:top-[calc(var(--header-h)+88px)]">
+            <MediaPanel
+              variant="frame"
+              image={image}
+              alt={category.title}
+              className="w-full min-h-[290px] wide:min-h-[530px]"
+            />
+          </div>
+        ) : (
+          <MediaPanel variant="frame" className="w-full min-h-[290px] wide:min-h-[530px]">
+            Approved food photography
+          </MediaPanel>
+        )}
       </div>
     </section>
   )

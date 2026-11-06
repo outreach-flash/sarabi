@@ -178,6 +178,7 @@ export const realms = [
     copy: 'Settle into sunken seating with water all around you and a cocktail in hand. As the first notes of a live set ripple across the Pond, lean back and take it all in. By the encore, you might be the loudest one at the table.',
     cta: 'Reserve at the Pond',
     image: pond,
+    detailImage: sunkenSeating,
   },
   {
     numeral: 'II',
@@ -191,6 +192,7 @@ export const realms = [
     copy: 'Beneath the gaze of the lioness, celebrity DJs play to a packed dance floor. Order a round at the carved stone bar, then get back to your people before the next track drops. This is Sarabi’s wildest room, with a tribal luxe signature all its own.',
     cta: 'Reserve at the Den',
     image: denBar,
+    detailImage: danceFloor,
   },
   {
     numeral: 'III',
@@ -204,6 +206,7 @@ export const realms = [
     copy: 'From your table, the view stretches across the paddy fields to the endless sea. As the sun dips into the water, the whole horizon turns gold. The music stays mellow, the cocktails keep flowing, and there’s every reason to linger long after sunset.',
     cta: 'Reserve on the Sundeck',
     image: sundeckSunset,
+    detailImage: cocktails,
   },
 ] as const
 
@@ -243,17 +246,18 @@ export const galleryMoments: Array<{
   title: string
   category: Exclude<GalleryMomentFilter, 'All'>
   type: 'Video' | 'Image'
+  image: StaticImageData
   wide?: boolean
 }> = [
-  { title: 'Live performances', category: 'Performances', type: 'Video', wide: true },
-  { title: 'A night at Sarabi', category: 'Nights', type: 'Image', wide: true },
-  { title: 'Food & drink', category: 'Food & Drink', type: 'Image' },
-  { title: 'The performance', category: 'Performances', type: 'Image' },
-  { title: 'After dark', category: 'Nights', type: 'Image' },
-  { title: 'Performance film', category: 'Performances', type: 'Video', wide: true },
-  { title: 'At the table', category: 'Food & Drink', type: 'Image', wide: true },
-  { title: 'The atmosphere', category: 'Nights', type: 'Image', wide: true },
-  { title: 'On stage', category: 'Performances', type: 'Image' },
+  { title: 'Live performances', category: 'Performances', type: 'Video', image: firePerformer, wide: true },
+  { title: 'A night at Sarabi', category: 'Nights', type: 'Image', image: danceFloor, wide: true },
+  { title: 'Food & drink', category: 'Food & Drink', type: 'Image', image: cocktails },
+  { title: 'The performance', category: 'Performances', type: 'Image', image: bookBand },
+  { title: 'After dark', category: 'Nights', type: 'Image', image: denBar },
+  { title: 'Performance film', category: 'Performances', type: 'Video', image: firePerformer, wide: true },
+  { title: 'At the table', category: 'Food & Drink', type: 'Image', image: sunkenSeating, wide: true },
+  { title: 'The atmosphere', category: 'Nights', type: 'Image', image: rooftopParty, wide: true },
+  { title: 'On stage', category: 'Performances', type: 'Image', image: bookBand },
 ]
 
 export const menuCategories = [
@@ -263,7 +267,7 @@ export const menuCategories = [
     title: 'Signatures',
     description:
       'Signature serves and menu highlights. Add only confirmed item names, descriptions and prices from the approved menu.',
-    image: 'Approved signature serve / menu image',
+    image: denBar,
     items: [
       {
         name: 'Signature item placeholder 01',
@@ -288,7 +292,7 @@ export const menuCategories = [
     title: 'Cocktails',
     description:
       'Explore the cocktail selection. Use approved photography and the final bar menu to populate this section.',
-    image: 'Approved cocktail photography',
+    image: cocktails,
     items: [1, 2, 3, 4].map((n) => ({
       name: `Cocktail placeholder 0${n}`,
       description: 'Description placeholder — list confirmed ingredients and a short flavour profile.',
@@ -300,7 +304,6 @@ export const menuCategories = [
     title: 'Kitchen',
     description:
       'Food menu presented in a clear, readable list. Add dietary tags or item photography only where details and assets are supplied.',
-    image: 'Approved food photography',
     items: [1, 2, 3, 4].map((n) => ({
       name: `Kitchen item placeholder 0${n}`,
       description: 'Description placeholder — add approved ingredients and serving details.',

@@ -1,3 +1,4 @@
+import { images } from '@/lib/content'
 import { AboutEyebrow } from './ui/AboutEyebrow'
 import { MediaPanel } from './ui/MediaPanel'
 
@@ -5,9 +6,12 @@ export function AboutInspiration() {
   return (
     <section id="inspiration" className="px-5 py-[72px] sm:px-[4%] sm:py-28 wide:px-[max(5.5%,calc((100vw-1280px)/2))]">
       <div className="mx-auto flex w-[min(1280px,100%)] flex-col gap-8 sm:grid sm:grid-cols-[1.1fr_0.9fr] sm:items-center sm:gap-[5%] wide:gap-[6.25%]">
-        <MediaPanel className="w-full min-h-[280px] sm:min-h-[410px]">
-          Cultural / brand visual placeholder
-        </MediaPanel>
+        <MediaPanel
+          image={images.firePerformer}
+          alt="A fire performer at Sarabi"
+          scaleReveal
+          className="w-full min-h-[280px] sm:min-h-[410px]"
+        />
         <div className="flex flex-col items-start">
           <AboutEyebrow>The Inspiration</AboutEyebrow>
           <h2 className="type-about-title mt-4 text-[32px] tracking-[-1.44px] text-cream sm:mt-[17px] sm:tracking-[-1.28px] wide:text-[57.6px] wide:tracking-[-2.3px] [&_em]:em-accent [&_em]:block">

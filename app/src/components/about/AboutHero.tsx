@@ -1,4 +1,5 @@
 import { ButtonLink } from '@/components/site/ui/ButtonLink'
+import { images } from '@/lib/content'
 import { MediaPanel } from './ui/MediaPanel'
 
 export function AboutHero() {
@@ -37,9 +38,12 @@ export function AboutHero() {
             </ButtonLink>
           </div>
         </div>
-        <MediaPanel variant="hero" className="w-full min-h-[290px] sm:min-h-[501px] wide:absolute wide:inset-[15%_5%_15%_46%] wide:min-h-0 wide:w-auto">
-          Replace with approved Sarabi brand film / photography
-        </MediaPanel>
+        <MediaPanel
+          variant="hero"
+          image={images.danceFloor}
+          alt="The Sarabi dance floor at peak hour"
+          className="w-full min-h-[290px] sm:min-h-[501px] wide:absolute wide:inset-[15%_5%_15%_46%] wide:min-h-0 wide:w-auto"
+        />
       </div>
     </section>
   )

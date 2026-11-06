@@ -1,5 +1,6 @@
 import { ButtonLink } from '@/components/site/ui/ButtonLink'
 import { MediaPanel } from '@/components/about/ui/MediaPanel'
+import { images } from '@/lib/content'
 
 export function SpacesHero() {
   return (
@@ -18,18 +19,22 @@ export function SpacesHero() {
           </span>
         </h1>
         <p className="type-page-body mx-auto mt-[19px] mb-[22px] max-w-[560px] sm:mt-[25px] sm:mb-[28px]" data-hero-actions>
-          Discover the three distinct spaces that make up Sarabi. Explore each setting and find the right place
-          for your next visit.
+          Every night at Sarabi moves through three realms — from sunset pours above the fields, to tables set in
+          the water, to the wildest dance floor in Vagator. Find the one that fits your night.
         </p>
         <div data-hero-actions>
-          <ButtonLink href="#realms" size="sm" icon={false}>
+          <ButtonLink href="#pond" size="sm" icon={false}>
             Explore the realms
           </ButtonLink>
         </div>
       </div>
-      <MediaPanel variant="frame" className="mt-[38px] w-full min-h-[230px] sm:mt-[65px] sm:min-h-[420px] wide:mt-[100px] wide:min-h-[570px]">
-        Wide photo or slow video placeholder
-      </MediaPanel>
+      <MediaPanel
+        image={images.sundeckSunset}
+        alt="Golden hour over the Sarabi Sundeck"
+        variant="frame"
+        scaleReveal
+        className="mt-[38px] w-full min-h-[230px] sm:mt-[65px] sm:min-h-[420px] wide:mt-[100px] wide:min-h-[570px]"
+      />
     </section>
   )
 }

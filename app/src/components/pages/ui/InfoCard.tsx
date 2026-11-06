@@ -10,7 +10,7 @@ export function InfoCard({
   children: ReactNode
 }) {
   return (
-    <article className="grid grid-cols-[36px_1fr] gap-[18px] border-t border-line py-[22px]" data-reveal>
+    <article className="grid grid-cols-[36px_1fr] gap-[18px] border-t border-line py-[22px]">
       <span className="flex h-[35px] w-[35px] items-center justify-center rounded-full border border-gold/30 font-display text-[8px] font-semibold text-gold">
         {mark}
       </span>

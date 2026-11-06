@@ -117,7 +117,7 @@ export function RealmsSequence() {
                   {realm.cta}
                 </button>
                 <Link
-                  href="/spaces"
+                  href={`/spaces#${realm.name.toLowerCase()}`}
                   className="flex min-h-[46px] items-center justify-center rounded-full border border-gold/35 bg-gold/[0.04] px-[26px] py-[12px] font-display text-[11.5px] font-bold tracking-[1.75px] text-gold uppercase no-underline transition-transform hover:-translate-y-0.5"
                 >
                   Explore

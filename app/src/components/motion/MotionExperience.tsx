@@ -80,9 +80,82 @@ export function MotionExperience() {
           )
         })
 
-        // The Realms signature sequence: scrubbed clip-path crossfades between realm
-        // images with a subtle scale settle and yPercent parallax. Desktop, motion allowed.
+        // Inner-page hero copy drifts up and fades as its hero section scrolls away.
+        gsap.utils.toArray<HTMLElement>('[data-hero-copy]').forEach((element) => {
+          gsap.to(element, {
+            y: -80,
+            opacity: 0.15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: element.closest('section'),
+              start: 'top top',
+              end: 'bottom 45%',
+              scrub: 0.6,
+            },
+          })
+        })
+
+        // Scrubbed scale-reveal: an inset rounded frame expands to full bleed while
+        // the photo inside settles from 1.15 to 1.
+        gsap.utils.toArray<HTMLElement>('[data-scale-reveal]').forEach((element) => {
+          const inner = element.querySelector('img:not([data-parallax])')
+          const boundary = { trigger: element, start: 'top bottom', end: 'top 25%', scrub: 0.7 }
+          gsap.fromTo(element,
+            { clipPath: 'inset(6% 8% round 24px)' },
+            { clipPath: 'inset(0% 0% round 0px)', ease: 'none', scrollTrigger: boundary },
+          )
+          if (inner) {
+            gsap.fromTo(inner, { scale: 1.15 }, { scale: 1, ease: 'none', scrollTrigger: boundary })
+          }
+        })
+
+        // Closing CTAs: a subtle scrubbed scale-in on top of the reveal.
+        gsap.utils.toArray<HTMLElement>('[data-scale-in]').forEach((element) => {
+          gsap.fromTo(element,
+            { scale: 0.95 },
+            {
+              scale: 1,
+              ease: 'none',
+              scrollTrigger: { trigger: element, start: 'top 92%', end: 'top 55%', scrub: 0.5 },
+            },
+          )
+        })
+
+        // Staggered child reveals.
+        if (document.querySelector('[data-stagger]')) {
+          ScrollTrigger.batch('[data-stagger] > *', {
+            start: 'top 88%',
+            once: true,
+            onEnter: (batch) => {
+              gsap.fromTo(batch,
+                { y: 36, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.9, stagger: 0.08, ease: 'power3.out', overwrite: true },
+              )
+            },
+          })
+        }
+
+        // Desktop-only scroll effects: drift, sticky stacking cards and the realms sequence.
         mm.add('(min-width: 60rem) and (prefers-reduced-motion: no-preference)', () => {
+          // Drift: elements tagged with data-speed float by speed × 100% of their own
+          // height across their section's scroll — numerals, glows, offset columns.
+          gsap.utils.toArray<HTMLElement>('[data-speed]').forEach((element) => {
+            const speed = Number(element.dataset.speed ?? 0)
+            gsap.fromTo(element,
+              { yPercent: -speed * 50 },
+              {
+                yPercent: speed * 50,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: element.closest('section'),
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: 0.8,
+                },
+              },
+            )
+          })
+
           const sequence = document.querySelector<HTMLElement>('[data-realms-sequence]')
           if (!sequence) return
           // Tells the sequence's IntersectionObserver to leave image opacity to GSAP.
@@ -128,13 +201,41 @@ export function MotionExperience() {
             }
           }
         })
+
+        // Mobile-only: sticky stacking cards replace the desktop drift.
+        mm.add('(max-width: 59.99rem) and (prefers-reduced-motion: no-preference)', () => {
+          gsap.utils.toArray<HTMLElement>('[data-stack-card]').forEach((card, index, cards) => {
+            const next = cards[index + 1]
+            if (!next) return
+            gsap.fromTo(card,
+              { scale: 1, filter: 'brightness(1)' },
+              {
+                scale: 0.94,
+                filter: 'brightness(0.6)',
+                ease: 'none',
+                scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: true },
+              },
+            )
+          })
+        })
       })
+
+      // Keep triggers correct when the layout shifts (gallery filter, image loads).
+      const mainContent = document.getElementById('main-content')
+      let resizeTimer: number | undefined
+      const resizeObserver = new ResizeObserver(() => {
+        window.clearTimeout(resizeTimer)
+        resizeTimer = window.setTimeout(() => ScrollTrigger.refresh(), 200)
+      })
+      if (mainContent) resizeObserver.observe(mainContent)
 
       const refresh = () => ScrollTrigger.refresh()
       window.addEventListener('load', refresh)
       document.fonts.ready.then(refresh).catch(() => undefined)
       cleanup = () => {
         window.removeEventListener('load', refresh)
+        window.clearTimeout(resizeTimer)
+        resizeObserver.disconnect()
         context.revert()
       }
     }

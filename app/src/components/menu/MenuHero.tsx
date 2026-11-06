@@ -1,5 +1,6 @@
 import { MediaPanel } from '@/components/about/ui/MediaPanel'
 import { ButtonLink } from '@/components/site/ui/ButtonLink'
+import { images } from '@/lib/content'
 
 export function MenuHero() {
   return (
@@ -27,9 +28,12 @@ export function MenuHero() {
           </ButtonLink>
         </div>
       </div>
-      <MediaPanel variant="frame" className="w-full min-h-[250px] sm:min-h-[360px] wide:min-h-[430px]">
-        Food & drink photography placeholder
-      </MediaPanel>
+      <MediaPanel
+        variant="frame"
+        image={images.cocktails}
+        alt="Signature cocktails at Sarabi"
+        className="w-full min-h-[250px] sm:min-h-[360px] wide:min-h-[430px]"
+      />
     </section>
   )
 }

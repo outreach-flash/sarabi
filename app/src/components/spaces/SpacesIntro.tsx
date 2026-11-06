@@ -11,8 +11,9 @@ export function SpacesIntro() {
         Find your place in <em className="em-accent">the experience.</em>
       </h2>
       <p className="type-page-body mt-[18px] max-w-[520px] sm:mt-0" data-reveal>
-        Each space has its own identity within Sarabi. Browse the showcases below for approved imagery and
-        descriptions, then choose to discover more or make a reservation.
+        A night at Sarabi moves through three realms. It begins on the Sundeck as the sun drops into the sea,
+        gathers around the Pond as live sets ripple across the water, and ends in the Den, where the dance floor
+        takes over until the early hours. Where will you be when it happens?
       </p>
     </section>
   )

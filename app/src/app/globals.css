@@ -259,6 +259,23 @@
   }
 }
 
+/* Breathing gold halo behind the centred card of the hero events wheel */
+.wheel-halo {
+  background: radial-gradient(circle, rgb(253 216 167 / .16), transparent 62%);
+  animation: wheel-halo-breathe 4.6s ease-in-out infinite;
+}
+@keyframes wheel-halo-breathe {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: .75;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.12);
+    opacity: 1;
+  }
+}
+
 /* Native accessible dialogs (BookingDialog, gallery lightbox) */
 dialog {
   color: var(--color-cream);
