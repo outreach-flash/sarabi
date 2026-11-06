@@ -15,12 +15,21 @@ function wheelOffset(i: number, active: number): number {
   return (((i - active) % COUNT) + COUNT + HALF) % COUNT - HALF
 }
 
-function styleFor(d: number): { scale: number; blur: number; opacity: number; z: number } {
-  const abs = Math.abs(d)
-  if (abs === 0) return { scale: 1.08, blur: 0, opacity: 1, z: 30 }
-  if (abs === 1) return { scale: 0.94, blur: 1.5, opacity: 0.9, z: 20 }
-  if (abs === 2) return { scale: 0.9, blur: 2.5, opacity: 0.65, z: 10 }
-  return { scale: 0.88, blur: 3, opacity: 0, z: 0 }
+const lerp = (from: number, to: number, t: number) => from + (to - from) * t
+
+/**
+ * Continuous look for a card at fractional offset `d` from the centre.
+ * `reach` is how many cards each side the stage can hold whole: everything
+ * within the reach is fully opaque (nothing on the wheel is ever cropped),
+ * then the card fades out across one more step so a card travelling during
+ * a drag dissolves before it could leave the stage.
+ */
+function styleFor(d: number, reach: number): { scale: number; blur: number; opacity: number; z: number } {
+  const a = Math.abs(d)
+  const scale = a <= 1 ? lerp(1.08, 0.94, a) : Math.max(0.86, lerp(0.94, 0.9, Math.min(a - 1, 1)))
+  const blur = a <= 1 ? lerp(0, 1, a) : Math.min(3.5, lerp(1, 2, a - 1))
+  const opacity = a <= reach ? 1 : a < reach + 0.75 ? 1 - (a - reach) / 0.55 : 0
+  return { scale, blur, opacity, z: Math.max(0, 30 - Math.round(a) * 10) }
 }
 
 export function FeaturedCarousel() {
@@ -28,18 +37,76 @@ export function FeaturedCarousel() {
   const [skipIndex, setSkipIndex] = useState<number | null>(null)
   const [dragging, setDragging] = useState(false)
   const [dragPx, setDragPx] = useState(0)
-  const [step, setStep] = useState(232)
+  const [step, setStep] = useState(240)
+  const [hub, setHub] = useState(1300)
+  const [reach, setReach] = useState(2)
   const stage = useRef<HTMLDivElement>(null)
   const activeRef = useRef(0)
   const dragStart = useRef<{ x: number; id: number } | null>(null)
   const suppressClick = useRef(false)
 
-  // Arc length of one wheel step: radius × angle (desktop 1100px @ 15°, mobile 700px @ 19°).
+  // Fit the arc to the stage: pick the step angle and hub radius so every
+  // visible card sits whole inside the stage. Cards are rotated, so the fit
+  // uses each card's rotated bounding box, not its raw width — and the scan
+  // keeps real gaps between neighbours on wide stages. ResizeObserver fires
+  // once on observe, which is the initial measure.
   useEffect(() => {
-    const update = () => setStep(window.matchMedia('(min-width: 60rem)').matches ? 288 : 232)
-    update()
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
+    const el = stage.current
+    if (!el) return
+    const wide = window.matchMedia('(min-width: 60rem)')
+    const compute = () => {
+      const card = el.querySelector<HTMLElement>('[data-wheel-card]')
+      if (!card) return
+      const w = card.offsetWidth
+      const h = card.offsetHeight
+      const xBud = el.clientWidth / 2 - (wide.matches ? 20 : 8)
+      const yBud = el.clientHeight / 2 - (wide.matches ? 24 : 16)
+      // Cards each side of centre that must sit whole in the stage.
+      const m = wide.matches && xBud >= 2.2 * w ? 2 : 1
+      const cap = ((wide.matches ? 14 : 26) * Math.PI) / 180
+      const scales = [1.08, 0.94, 0.9]
+      const bw = (a: number) => w * Math.cos(a) + h * Math.sin(a)
+      const bh = (a: number) => h * Math.cos(a) + w * Math.sin(a)
+      let theta = ((m === 2 ? 8 : 18) * Math.PI) / 180
+      let dist = 320
+      for (let halfDeg = 2; halfDeg <= (cap * 360) / Math.PI; halfDeg += 1) {
+        const t = (halfDeg * Math.PI) / 360
+        let d = Infinity
+        let ok = true
+        for (let k = 1; k <= m; k++) {
+          const a = k * t
+          const s = scales[k] ?? 0.9
+          const sin = Math.sin(a)
+          const rise = 1 - Math.cos(a)
+          if (sin < 0.02 || rise < 1e-4) {
+            ok = false
+            break
+          }
+          d = Math.min(d, (xBud - (s * bw(a)) / 2) / sin, (yBud - (s * bh(a)) / 2) / rise)
+        }
+        if (!ok || !Number.isFinite(d) || d < 50) continue
+        if (m === 2) {
+          const gap01 = d * Math.sin(t) - (scales[0] * w + (scales[1] ?? 0.94) * bw(t)) / 2
+          const gap12 = d * Math.sin(2 * t) - ((scales[1] ?? 0.94) * bw(t) + (scales[2] ?? 0.9) * bw(2 * t)) / 2
+          if (gap01 < 4 || gap12 < 4) continue
+        }
+        theta = t
+        dist = d
+      }
+      const radius = dist - h / 2
+      el.style.setProperty('--wheel-step', `${(theta * 180) / Math.PI}deg`)
+      el.style.setProperty('--wheel-r', `${Math.max(radius, -h / 2 + 40)}px`)
+      setStep(dist * theta)
+      setHub(dist)
+      setReach(m)
+    }
+    const observer = new ResizeObserver(compute)
+    observer.observe(el)
+    wide.addEventListener('change', compute)
+    return () => {
+      observer.disconnect()
+      wide.removeEventListener('change', compute)
+    }
   }, [])
 
   // The skip only applies to the update that wrapped the wheel; restore transitions
@@ -114,18 +181,20 @@ export function FeaturedCarousel() {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
         onPointerCancel={onPointerEnd}
-        className="relative mt-2 h-[540px] overflow-hidden [--wheel-step:19deg] [touch-action:pan-y] md:h-[500px] lg:h-[500px] lg:[--wheel-step:15deg]"
+        className="relative mt-2 h-[540px] w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_3%,black_97%,transparent)] [--wheel-r:700px] [--wheel-step:19deg] [touch-action:pan-y] md:h-[500px] lg:[--wheel-step:15deg] xl:[margin-left:calc(50%_-_50vw)] xl:w-screen"
       >
         <div aria-hidden="true" className="wheel-halo pointer-events-none absolute top-1/2 left-1/2 h-[380px] w-[380px] rounded-full md:h-[440px] md:w-[440px]" />
         {events.map((event, i) => {
           const d = wheelOffset(i, active)
-          const s = styleFor(d)
-          const hidden = Math.abs(d) >= 3
-          const isCenter = d === 0
+          const off = d + (dragging ? dragSteps : 0)
+          const s = styleFor(off, reach)
+          const hidden = Math.abs(d) >= reach + 1
+          const isCenter = Math.abs(off) < 0.5
           const badge = badgeParts(event.date)
           return (
             <a
               key={event.id}
+              data-wheel-card
               href={`#event-${event.id}`}
               onFocus={() => turnTo(i)}
               onClick={(e) => {
@@ -140,7 +209,7 @@ export function FeaturedCarousel() {
               tabIndex={hidden ? -1 : 0}
               aria-hidden={hidden || undefined}
               aria-label={isCenter ? undefined : `Show ${event.title}`}
-              className={`absolute top-1/2 left-1/2 aspect-[257/352] w-[min(74vw,300px)] [transform-origin:50%_calc(100%_+_700px)] md:w-[250px] lg:w-[235px] lg:[transform-origin:50%_calc(100%_+_1100px)] ${
+              className={`absolute top-1/2 left-1/2 aspect-[257/352] w-[min(56vw,220px)] [transform-origin:50%_calc(100%_+_var(--wheel-r))] md:w-[250px] lg:w-[210px] xl:w-[235px] ${
                 hidden ? 'pointer-events-none' : ''
               } overflow-hidden rounded-[14px] border bg-brown transition-[transform,filter,opacity] duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
                 isCenter
@@ -148,14 +217,14 @@ export function FeaturedCarousel() {
                   : 'border-line'
               }`}
               style={{
-                transform: `translate(-50%, -50%) rotate(calc(var(--wheel-step) * ${(d + (dragging ? dragSteps : 0)).toFixed(3)})) scale(${s.scale})`,
-                filter: s.blur ? `blur(${s.blur}px)` : undefined,
+                transform: `translate(-50%, -50%) rotate(calc(var(--wheel-step) * ${off.toFixed(3)})) translateY(${((s.scale - 1) * hub).toFixed(1)}px) scale(${s.scale})`,
+                filter: s.blur > 0.05 ? `blur(${s.blur.toFixed(2)}px)` : undefined,
                 opacity: s.opacity,
                 zIndex: s.z,
                 transition: dragging || i === skipIndex ? 'none' : undefined,
               }}
             >
-              <Image src={event.image} alt="" fill sizes="(min-width: 960px) 235px, (min-width: 700px) 250px, min(74vw, 300px)" className="object-cover" />
+              <Image src={event.image} alt="" fill sizes="(min-width: 1280px) 235px, (min-width: 1024px) 210px, (min-width: 700px) 250px, min(56vw, 220px)" className="object-cover" />
               <span className="absolute inset-0 bg-[linear-gradient(to_top,rgba(21,10,5,0.94)_4%,rgba(21,10,5,0.14)_55%,rgba(21,10,5,0.08))]" />
               <span className="absolute top-[14px] left-[14px] flex flex-col items-center gap-[3px] rounded-lg bg-gold px-[10px] py-[6px] text-[8.8px] leading-none font-extrabold tracking-[1.76px] text-cocoa uppercase">
                 <b className="font-display text-[18.4px] leading-none font-extrabold tracking-normal">{badge.day}</b>
