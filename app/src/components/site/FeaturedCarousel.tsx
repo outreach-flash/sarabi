@@ -32,9 +32,11 @@ function styleFor(d: number, reach: number): { scale: number; blur: number; opac
   return { scale, blur, opacity, z: Math.max(0, 30 - Math.round(a) * 10) }
 }
 
+type SeamStep = { index: number; at: number; animate: boolean }
+
 export function FeaturedCarousel() {
   const [active, setActive] = useState(0)
-  const [skipIndex, setSkipIndex] = useState<number | null>(null)
+  const [seams, setSeams] = useState<SeamStep[]>([])
   const [dragging, setDragging] = useState(false)
   const [dragPx, setDragPx] = useState(0)
   const [step, setStep] = useState(240)
@@ -43,6 +45,7 @@ export function FeaturedCarousel() {
   const stage = useRef<HTMLDivElement>(null)
   const activeRef = useRef(0)
   const dragStart = useRef<{ x: number; id: number } | null>(null)
+  const seamTimer = useRef<number | undefined>(undefined)
   const suppressClick = useRef(false)
 
   // Fit the arc to the stage: pick the step angle and hub radius so every
@@ -109,25 +112,62 @@ export function FeaturedCarousel() {
     }
   }, [])
 
-  // The skip only applies to the update that wrapped the wheel; restore transitions
-  // right after that commit so later moves animate normally.
-  const applyActive = (next: number, skip: number | null = null) => {
+  // Move the wheel by `steps` (positive = next). Cards whose circular offset
+  // jumps by more than one position are crossing the wrap seam: they get a
+  // two-phase treatment so the wheel never sweeps a card across the stage.
+  // Going next, the seam card is invisible on both sides, so it teleports
+  // just off the right edge and wheels in from there. Going previous, the
+  // seam card is leaving: it rotates out to the right edge and fades, then
+  // rejoins hidden from the left seam.
+  const applyActive = (next: number, steps = 0) => {
+    const prev = activeRef.current
     activeRef.current = next
-    setSkipIndex(skip)
     setActive(next)
-    window.setTimeout(() => setSkipIndex(null), 0)
+    if (seamTimer.current !== undefined) {
+      window.clearTimeout(seamTimer.current)
+      seamTimer.current = undefined
+    }
+    if (steps === 0) {
+      setSeams([])
+      return
+    }
+    const dir = steps > 0 ? 1 : -1
+    const created: SeamStep[] = []
+    for (let i = 0; i < COUNT; i++) {
+      const from = wheelOffset(i, prev)
+      const to = wheelOffset(i, next)
+      if (Math.abs(to - from) > 1) {
+        created.push(dir > 0 ? { index: i, at: to + 1, animate: false } : { index: i, at: from + 1, animate: true })
+      }
+    }
+    if (!created.length) {
+      setSeams([])
+      return
+    }
+    setSeams(created)
+    if (dir > 0) {
+      // One invisible commit off the edge, then transition to the true offset.
+      seamTimer.current = window.setTimeout(() => {
+        setSeams((current) => current.filter((s) => s.animate))
+      }, 0)
+    } else {
+      // Let the exit animation play out, then pick the card up from the seam.
+      seamTimer.current = window.setTimeout(() => {
+        setSeams((current) => current.map((s) => ({ ...s, at: -HALF, animate: false })))
+        seamTimer.current = window.setTimeout(() => {
+          setSeams((current) => current.filter((s) => s.animate))
+        }, 0)
+      }, 620)
+    }
   }
 
   const rotate = (direction: number) => {
-    const current = activeRef.current
-    // The card sitting at the seam (offset ∓HALF) flips to the far side when the
-    // wheel wraps — it must not sweep across the stage, so its transition is skipped.
-    const seam = direction > 0 ? (current - HALF + COUNT) % COUNT : (current + HALF) % COUNT
-    applyActive((current + direction + COUNT) % COUNT, seam)
+    applyActive((activeRef.current + direction + COUNT) % COUNT, direction)
   }
 
   const turnTo = (index: number) => {
-    applyActive(((index % COUNT) + COUNT) % COUNT)
+    const target = ((index % COUNT) + COUNT) % COUNT
+    applyActive(target, wheelOffset(target, activeRef.current))
   }
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -151,8 +191,7 @@ export function FeaturedCarousel() {
     setDragging(false)
     setDragPx(0)
     if (delta !== 0) {
-      const seam = delta < 0 ? (current - HALF + COUNT) % COUNT : (current + HALF) % COUNT
-      applyActive((current - delta + COUNT) % COUNT, seam)
+      applyActive((current - delta + COUNT) % COUNT, -delta)
     }
   }
 
@@ -187,9 +226,11 @@ export function FeaturedCarousel() {
         {events.map((event, i) => {
           const d = wheelOffset(i, active)
           const off = d + (dragging ? dragSteps : 0)
-          const s = styleFor(off, reach)
+          const seam = seams.find((s) => s.index === i)
+          const renderOff = seam ? seam.at : off
+          const s = styleFor(renderOff, reach)
           const hidden = Math.abs(d) >= reach + 1
-          const isCenter = Math.abs(off) < 0.5
+          const isCenter = Math.abs(renderOff) < 0.5
           const badge = badgeParts(event.date)
           return (
             <a
@@ -217,11 +258,11 @@ export function FeaturedCarousel() {
                   : 'border-line'
               }`}
               style={{
-                transform: `translate(-50%, -50%) rotate(calc(var(--wheel-step) * ${off.toFixed(3)})) translateY(${((s.scale - 1) * hub).toFixed(1)}px) scale(${s.scale})`,
+                transform: `translate(-50%, -50%) rotate(calc(var(--wheel-step) * ${renderOff.toFixed(3)})) translateY(${((s.scale - 1) * hub).toFixed(1)}px) scale(${s.scale})`,
                 filter: s.blur > 0.05 ? `blur(${s.blur.toFixed(2)}px)` : undefined,
                 opacity: s.opacity,
                 zIndex: s.z,
-                transition: dragging || i === skipIndex ? 'none' : undefined,
+                transition: dragging || (seam && !seam.animate) ? 'none' : undefined,
               }}
             >
               <Image src={event.image} alt="" fill sizes="(min-width: 1280px) 235px, (min-width: 1024px) 210px, (min-width: 700px) 250px, min(56vw, 220px)" className="object-cover" />
